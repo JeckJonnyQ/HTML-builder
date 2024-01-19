@@ -5,8 +5,17 @@ function ctreateFileandWrite() {
   const { stdin, stdout } = process;
   stdout.write('Hello, user, write some text, please!\n');
 
-  // Очистить файл при запуске программы
-  fs.truncate(`${__dirname}/text.txt`, 0, () => {});
+  // Создание и очистка файла при запуске программы
+  fs.truncate(`${__dirname}/text.txt`, 0, (error) => {
+    if (error) {
+      fs.writeFile(`${__dirname}/text.txt`, '', (error) => {
+        if (error) {
+          console.log(error);
+          return;
+        }
+      });
+    }
+  });
 
   stdin.on('data', (data) => {
     const input = data.toString().trim();
@@ -17,9 +26,9 @@ function ctreateFileandWrite() {
         `${__dirname}/text.txt`,
         input + '\n',
         { flag: 'a' },
-        (err) => {
-          if (err) {
-            console.log(err);
+        (error) => {
+          if (error) {
+            console.log(error);
             return;
           }
         },
